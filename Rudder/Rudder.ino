@@ -1,4 +1,3 @@
-#include <TimerTCC0.h>
 #include <IcsHardSerialClass.h>
 
 #define STICK_X 1
@@ -7,7 +6,10 @@
 #define LED_YELLOW  LED_BUILTIN
 #define LED_BLUE    PIN_LED_RXL
 
-const uint32_t zero_pos = 7500;
+const uint32_t servo_zero_pos = 7500;
+const float stick_x_zero_raw = 2078.0;
+const float stick_y_zero_raw = 2057.0;
+
 const float range_deg = 30.0; // -range_deg ~ +range_deg
 const float phase_rad = 3.14 / 4;
 //      y
@@ -73,9 +75,9 @@ void loop() {
 }
 
 void servo_write_degree(float degree) { //get degree -15.0 ~ +15.0, control servo
-  int servo_val = zero_pos + (2000 * degree / 135);
-  if (abs(servo_val - zero_pos) < 2) {
-    servo_val = zero_pos;
+  int servo_val = servo_zero_pos + (2000 * degree / 135);
+  if (abs(servo_val - servo_zero_pos) < 2) {
+    servo_val = servo_zero_pos;
   }
   krs.setPos(0, servo_val );
   Serial.println(servo_val);
@@ -99,8 +101,8 @@ float stick_normalized() { //return -1 ~ +1
     stick_x_raw10 += analogRead(STICK_X);
     stick_y_raw10 += analogRead(STICK_Y);
   }
-  float stick_x = ((float)stick_x_raw10 / 10 - 2078.0) / 2048.0;
-  float stick_y = ((float)stick_y_raw10 / 10 - 2057.0) / 2048.0;
+  float stick_x = ((float)stick_x_raw10 / 10 - stick_x_zero_raw) / 2048.0;
+  float stick_y = ((float)stick_y_raw10 / 10 - stick_y_zero_raw) / 2048.0;
   float len = sqrt(stick_x * stick_x + stick_y * stick_y);
   return (len * cos(atan2(stick_y, stick_x) - phase_rad));
 }
