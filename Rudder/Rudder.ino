@@ -1,13 +1,13 @@
 #include <TimerTCC0.h>
 #include <IcsHardSerialClass.h>
 
-#define DAC 0 //未使用
 #define STICK_X 1
 #define STICK_Y 2
 #define EN_PIN  10
 #define LED_YELLOW  LED_BUILTIN
 #define LED_BLUE    PIN_LED_RXL
 
+const uint32_t zero_pos = 7500;
 const float range_deg = 30.0; // -range_deg ~ +range_deg
 const float phase_rad = 3.14 / 4;
 //      y
@@ -19,13 +19,10 @@ const float phase_rad = 3.14 / 4;
 
 const long BAUDRATE = 115200;  //一番遅いのがこれ
 const int TIMEOUT = 50;    //通信できてないか確認用にわざと遅めに設定
-
 IcsHardSerialClass krs(&Serial1, EN_PIN, BAUDRATE, TIMEOUT); //インスタンス＋ENピン(2番ピン)およびUARTの指定
 
 void setup() {
-  // put your setup code here, to run once:
   analogReadResolution(12);
-  //pinMode(DAC, INPUT);
   pinMode(LED_YELLOW, OUTPUT);
   pinMode(LED_BLUE, OUTPUT);
   digitalWrite(LED_YELLOW    , HIGH);
@@ -35,8 +32,6 @@ void setup() {
 
   krs.begin();  //サーボモータの通信初期設定
 
-  //TimerTcc0.initialize((1000000 / PWM_Hz) / 1000); //PWM1パルスを1000回計測
-  //TimerTcc0.attachInterrupt(timerIsr);
 }
 
 void loop() {
@@ -78,9 +73,9 @@ void loop() {
 }
 
 void servo_write_degree(float degree) { //get degree -15.0 ~ +15.0, control servo
-  int servo_val = 7500 + (2000 * degree / 135);
-  if (abs(servo_val - 7500) < 2) {
-    servo_val = 7500;
+  int servo_val = zero_pos + (2000 * degree / 135);
+  if (abs(servo_val - zero_pos) < 2) {
+    servo_val = zero_pos;
   }
   krs.setPos(0, servo_val );
   Serial.println(servo_val);
