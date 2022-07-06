@@ -6,9 +6,9 @@
 #define LED_YELLOW  LED_BUILTIN
 #define LED_BLUE    PIN_LED_RXL
 
-const uint32_t servo_zero_pos = 7500;
-const float stick_x_zero_raw = 2078.0;
-const float stick_y_zero_raw = 2057.0;
+const int servo_zero_pos = 7680;
+const float stick_x_zero_raw = 2061.0;
+const float stick_y_zero_raw = 2039.0;
 
 const float range_deg = 30.0; // -range_deg ~ +range_deg
 const float phase_rad = 3.14 / 4;
@@ -41,8 +41,8 @@ void loop() {
     Serial.print(analogRead(STICK_X));
     Serial.print(",");
     Serial.print(analogRead(STICK_Y));
-    Serial.print(",");*/
-  
+    Serial.print(",");
+  */
     Serial.print(stick_normalized());
     Serial.print(",");
     Serial.print(control_curve_degree(stick_normalized()));
@@ -76,10 +76,10 @@ void loop() {
 
 void servo_write_degree(float degree) { //get degree -15.0 ~ +15.0, control servo
   int servo_val = servo_zero_pos + (2000 * degree / 135);
-  if (abs(servo_val - servo_zero_pos) < 2) {
+  if (abs(servo_val - servo_zero_pos) < 3) {
     servo_val = servo_zero_pos;
   }
-  krs.setPos(0, servo_val );
+  krs.setPos(0, servo_val);
   Serial.println(servo_val);
 }
 
@@ -101,6 +101,10 @@ float stick_normalized() { //return -1 ~ +1
     stick_x_raw10 += analogRead(STICK_X);
     stick_y_raw10 += analogRead(STICK_Y);
   }
+  /*
+    Serial.print(stick_y_raw10 / 10);
+    Serial.print(",");
+    Serial.println(stick_x_raw10 / 10);*/
   float stick_x = ((float)stick_x_raw10 / 10 - stick_x_zero_raw) / 2048.0;
   float stick_y = ((float)stick_y_raw10 / 10 - stick_y_zero_raw) / 2048.0;
   float len = sqrt(stick_x * stick_x + stick_y * stick_y);
