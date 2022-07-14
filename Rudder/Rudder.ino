@@ -84,7 +84,8 @@ void servo_write_degree(float degree) { //get degree -15.0 ~ +15.0, control serv
 }
 
 float control_curve_degree(float val_normalized) { //get -1 ~ +1 , return degree -15 ~ +15
-  float degree = val_normalized * abs(val_normalized) * range_deg;
+  //float degree = val_normalized * abs(val_normalized) * range_deg;
+  float degree = val_normalized * range_deg;
   if (degree >= range_deg) {
     degree = range_deg;
   }
