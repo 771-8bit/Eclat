@@ -11,7 +11,7 @@ const float stick_x_zero_raw = 2061.0;
 const float stick_y_zero_raw = 2039.0;
 
 const float range_deg = 30.0; // -range_deg ~ +range_deg
-const float phase_rad = 3.14 / 4;
+const float phase_rad = 0;    //3.14 / 4;
 //      y
 //      |  pi/4
 //      | /
@@ -74,7 +74,7 @@ void loop() {
 
 }
 
-void servo_write_degree(float degree) { //get degree -15.0 ~ +15.0, control servo
+void servo_write_degree(float degree) { //get degree -range_deg ~ +range_deg, control servo
   int servo_val = servo_zero_pos + (2000 * degree / 135);
   if (abs(servo_val - servo_zero_pos) < 3) {
     servo_val = servo_zero_pos;
@@ -83,7 +83,7 @@ void servo_write_degree(float degree) { //get degree -15.0 ~ +15.0, control serv
   Serial.println(servo_val);
 }
 
-float control_curve_degree(float val_normalized) { //get -1 ~ +1 , return degree -15 ~ +15
+float control_curve_degree(float val_normalized) { //get -1 ~ +1 , return degree -range_deg ~ +range_deg
   //float degree = val_normalized * abs(val_normalized) * range_deg;
   float degree = val_normalized * range_deg;
   if (degree >= range_deg) {
