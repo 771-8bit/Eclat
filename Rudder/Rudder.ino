@@ -1,14 +1,14 @@
 #include <IcsHardSerialClass.h>
 
-#define STICK_X 1
-#define STICK_Y 2
+#define STICK_X 2
+#define STICK_Y 1
 #define EN_PIN  10
 #define LED_YELLOW  LED_BUILTIN
 #define LED_BLUE    PIN_LED_RXL
 
-const int servo_zero_pos = 7680;
-const float stick_x_zero_raw = 2061.0;
-const float stick_y_zero_raw = 2039.0;
+const int servo_zero_pos = 7500;
+const float stick_x_zero_raw = 2055.0;
+const float stick_y_zero_raw = 2065.0;
 
 const float range_deg = 30.0; // -range_deg ~ +range_deg
 const float phase_rad = 0;    //3.14 / 4;
@@ -37,17 +37,18 @@ void setup() {
 }
 
 void loop() {
-  /*
+  
     Serial.print(analogRead(STICK_X));
     Serial.print(",");
     Serial.print(analogRead(STICK_Y));
     Serial.print(",");
-  */
+  
     Serial.print(stick_normalized());
     Serial.print(",");
     Serial.print(control_curve_degree(stick_normalized()));
     Serial.print(",");
     servo_write_degree(control_curve_degree(stick_normalized()));
+    Serial.println(krs.getPos(0));
   
   /*
   delay(1);
@@ -76,7 +77,7 @@ void loop() {
 
 void servo_write_degree(float degree) { //get degree -range_deg ~ +range_deg, control servo
   int servo_val = servo_zero_pos + (2000 * degree / 135);
-  if (abs(servo_val - servo_zero_pos) < 3) {
+  if (abs(servo_val - servo_zero_pos) < 10) {
     servo_val = servo_zero_pos;
   }
   krs.setPos(0, servo_val);
